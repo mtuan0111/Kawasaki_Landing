@@ -25,7 +25,6 @@
 			window.msRequestAnimationFrame     ||
 			function(/* function */ callback){
 				window.setTimeout(callback, 1000 / 60);
-                alert(123);
 			}
 		);
 	}();
@@ -47,7 +46,7 @@
 		this.el = el;
 		this.image = this.el.previousElementSibling;
 		this.current_frame = 0;
-		this.total_frames = 150;
+		this.total_frames = 100;
 		this.path = new Array();
 		this.length = new Array();
 		this.handle = 0;
@@ -137,14 +136,13 @@
 		return (elTop + elH * h) <= viewed && (elBottom) >= scrolled;
 	}
 
-	function init() {
+	function init(callback) {
 		var svgs = Array.prototype.slice.call( document.querySelectorAll( '#main svg' ) ),
 			svgArr = new Array(),
 			didScroll = false,
 			resizeTimeout;
 
 		// the svgs already shown...
-
 		svgs.forEach( function( el, i ) {
 			var svg = new SVGEl( el );
 			svgArr[i] = svg;
@@ -155,8 +153,6 @@
 					}
 				};
 			}( el ), 250 );
-
-            // alert(123);
 		} );
 
 		// var scrollHandler = function() {
@@ -186,9 +182,11 @@
 
 		// window.addEventListener( 'scroll', scrollHandler, false );
 		// window.addEventListener( 'resize', resizeHandler, false );
+        callback();
 	}
 
-	init();
-    // console.log("here");
+	init(function(){
+        console.log(123);
+    });
 
 })();

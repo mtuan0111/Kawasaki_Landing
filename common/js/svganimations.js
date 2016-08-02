@@ -47,7 +47,7 @@
 		this.el = el;
 		this.image = this.el.previousElementSibling;
 		this.current_frame = 0;
-		this.total_frames = 150;
+		this.total_frames = 100;
 		this.path = new Array();
 		this.length = new Array();
 		this.handle = 0;
@@ -144,7 +144,6 @@
 			resizeTimeout;
 
 		// the svgs already shown...
-
 		svgs.forEach( function( el, i ) {
 			var svg = new SVGEl( el );
 			svgArr[i] = svg;
@@ -154,41 +153,38 @@
 						svg.render();
 					}
 				};
-			}( el ), 250 );
-
-            // alert(123);
+			}( el ), 100 );
 		} );
 
-		// var scrollHandler = function() {
-		// 		if( !didScroll ) {
-		// 			didScroll = true;
-		// 			setTimeout( function() { scrollPage(); }, 60 );
-		// 		}
-		// 	},
-		// 	scrollPage = function() {
-		// 		svgs.forEach( function( el, i ) {
-		// 			if( inViewport( el.parentNode, 0.5 ) ) {
-		// 				svgArr[i].render();
-		// 			}
-		// 		});
-		// 		didScroll = false;
-		// 	},
-		// 	resizeHandler = function() {
-		// 		function delayed() {
-		// 			scrollPage();
-		// 			resizeTimeout = null;
-		// 		}
-		// 		if ( resizeTimeout ) {
-		// 			clearTimeout( resizeTimeout );
-		// 		}
-		// 		resizeTimeout = setTimeout( delayed, 200 );
-		// 	};
+		var scrollHandler = function() {
+				if( !didScroll ) {
+					didScroll = true;
+					setTimeout( function() { scrollPage(); }, 60 );
+				}
+			},
+			scrollPage = function() {
+				svgs.forEach( function( el, i ) {
+					if( inViewport( el.parentNode, 0.5 ) ) {
+						svgArr[i].render();
+					}
+				});
+				didScroll = false;
+			},
+			resizeHandler = function() {
+				function delayed() {
+					scrollPage();
+					resizeTimeout = null;
+				}
+				if ( resizeTimeout ) {
+					clearTimeout( resizeTimeout );
+				}
+				resizeTimeout = setTimeout( delayed, 200 );
+			};
 
-		// window.addEventListener( 'scroll', scrollHandler, false );
-		// window.addEventListener( 'resize', resizeHandler, false );
+		window.addEventListener( 'scroll', scrollHandler, false );
+		window.addEventListener( 'resize', resizeHandler, false );
 	}
 
 	init();
-    // console.log("here");
 
 })();

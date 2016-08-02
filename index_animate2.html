@@ -31,7 +31,7 @@
             <div id="header_inner">
                 <!-- <p class="img_po"><img src="img/common/circle_00.png" alt="一般見学会を開催します。11月19・20日" /></p> -->
                 <div class="main" id="main">
-<svg class="line-drawing hide" id="mac" width="1006.64" height="1053.85" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1006.64 1053.85">
+                    <svg id="line-drawing" width="1006.64" height="1053.85" viewBox="0 0 1006.64 1053.85">
                         <path d="M340.79,63.46L340.64 17.19 369.44 0.51 616.43 16.9 616.75 115.67" style="stroke-dasharray: 425.855, 425.855; stroke-dashoffset: 0;"></path>
                         <line x1="369.44" y1="0.51" x2="369.65" y2="64.76"></line>
                         <path d="M721.48,85.8L714.84 85.38 593.84 122.8 594.9 454.07" style="stroke-dasharray: 464.579, 464.579; stroke-dashoffset: 0;"></path>
@@ -662,10 +662,35 @@
         </div>
         <!--/js-->
         <!--js-->
-        <script type="text/javascript" src="common/js/common.js"></script>
+        <!-- <script type="text/javascript" src="common/js/common.js"></script> -->
         <!-- <script src="js/classie.js"></script>
         <script src="js/svganimations.js"></script> -->
         <!--/js-->
+
+        <script type="text/javascript" src="common/js/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript" src="js/snap.svg.js"></script>
+        <script type="text/javascript" src="js/paper.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                // console.log(123);
+                // alert(123);
+                var object_array = $("#line-drawing >*");
+                console.log(object_array[3]);
+                console.log((object_array[3]).tagName);
+
+                paper.path(Snap.format("M{x},{y}h{dim.width}v{dim.height}h{dim['negative width']}z", {
+                    x: 10,
+                    y: 20,
+                    dim: {
+                        width: 40,
+                        height: 50,
+                        "negative width": -40
+                    }
+                }));
+
+
+            })
+        </script>
     </body>
 
 </html>
