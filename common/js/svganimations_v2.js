@@ -213,9 +213,11 @@
 		// window.addEventListener( 'resize', resizeHandler, false );
         // callback();
 	}
+    $(document).ready(function(){
+        init(function(){
 
-	init(function(){
+        });
+    })
 
-    });
 
 })();
