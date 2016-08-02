@@ -17,6 +17,7 @@
 	var docElem = window.document.documentElement;
 
 	window.requestAnimFrame = function(){
+        // console.log("here");
 		return (
 			window.requestAnimationFrame       ||
 			window.webkitRequestAnimationFrame ||
@@ -24,7 +25,9 @@
 			window.oRequestAnimationFrame      ||
 			window.msRequestAnimationFrame     ||
 			function(/* function */ callback){
+
 				window.setTimeout(callback, 1000 / 60);
+
 			}
 		);
 	}();
@@ -50,17 +53,29 @@
 		this.path = new Array();
 		this.length = new Array();
 		this.handle = 0;
+        this.done = false;
 		this.init();
 	}
 
-	SVGEl.prototype.init = function() {
+	SVGEl.prototype.init = function(callback) {
 		var self = this;
+        var path_length = [].slice.call( this.el.querySelectorAll( 'path' ) ).length;
+        // console.log(path_length);
 		[].slice.call( this.el.querySelectorAll( 'path' ) ).forEach( function( path, i ) {
 			self.path[i] = path;
 			var l = self.path[i].getTotalLength();
 			self.length[i] = l;
 			self.path[i].style.strokeDasharray = l + ' ' + l;
 			self.path[i].style.strokeDashoffset = l;
+            if(i === path_length - 1)
+            {
+                self.done = true;
+                if (callback && typeof(callback) === "function") {
+                    callback();
+                }
+            }
+            // console.log(i + " " + self);
+
 		} );
 	};
 
@@ -70,18 +85,28 @@
 		this.draw();
 	};
 
-	SVGEl.prototype.draw = function() {
+	SVGEl.prototype.draw = function(revert) {
 		var self = this,
 			progress = this.current_frame/this.total_frames;
 		if (progress > 1) {
 			window.cancelAnimFrame(this.handle);
 			this.showImage();
+            console.log("done");
 		} else {
 			this.current_frame++;
+            console.log(this.current_frame);
+
+            console.log(Math.floor((Math.random() * 2) + 1));
+
 			for(var j=0, len = this.path.length; j<len;j++){
-				this.path[j].style.strokeDashoffset = Math.floor(this.length[j] * (1 - progress));
+				this.path[j].style.strokeDashoffset = Math.floor(this.length[j] * -(1 - progress));
+                // if (j == len - 1)
+                // console.log(j + " - " + len);
+                // alert(Math.floor(this.length[j] * (1 - progress)));
 			}
-			this.handle = window.requestAnimFrame(function() { self.draw(); });
+
+            // console.log(this);
+			this.handle = window.requestAnimFrame(function() { self.draw(revert); });
 		}
 	};
 
@@ -136,16 +161,19 @@
 		return (elTop + elH * h) <= viewed && (elBottom) >= scrolled;
 	}
 
-	function init(callback) {
+	function init() {
 		var svgs = Array.prototype.slice.call( document.querySelectorAll( '#main svg' ) ),
 			svgArr = new Array(),
 			didScroll = false,
 			resizeTimeout;
+            // console.log(svgs[0]);
 
 		// the svgs already shown...
 		svgs.forEach( function( el, i ) {
 			var svg = new SVGEl( el );
+
 			svgArr[i] = svg;
+            // console.log(svg);
 			setTimeout(function( el ) {
 				return function() {
 					if( inViewport( el.parentNode ) ) {
@@ -154,6 +182,7 @@
 				};
 			}( el ), 250 );
 		} );
+
 
 		// var scrollHandler = function() {
 		// 		if( !didScroll ) {
@@ -182,11 +211,11 @@
 
 		// window.addEventListener( 'scroll', scrollHandler, false );
 		// window.addEventListener( 'resize', resizeHandler, false );
-        callback();
+        // callback();
 	}
 
 	init(function(){
-        console.log(123);
+
     });
 
 })();

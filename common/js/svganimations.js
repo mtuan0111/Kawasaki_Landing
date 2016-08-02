@@ -76,7 +76,9 @@
 			progress = this.current_frame/this.total_frames;
 		if (progress > 1) {
 			window.cancelAnimFrame(this.handle);
-			this.showImage();
+			console.log("done");
+            this.showImage();
+
 		} else {
 			this.current_frame++;
 			for(var j=0, len = this.path.length; j<len;j++){
