@@ -55,7 +55,9 @@
 	}
 
 	SVGEl.prototype.init = function() {
+
 		var self = this;
+        classie.remove( this.el, 'hide' );
 		[].slice.call( this.el.querySelectorAll( 'path' ) ).forEach( function( path, i ) {
 			self.path[i] = path;
 			var l = self.path[i].getTotalLength();
