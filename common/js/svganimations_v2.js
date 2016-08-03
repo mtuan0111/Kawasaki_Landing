@@ -54,6 +54,9 @@
       this.length = new Array();
       this.handle = 0;
       this.done = false;
+      this.drawing = new Array();
+      this.direction = new Array();
+      this.delay = new Array();
       this.init();
   }
 
@@ -63,11 +66,36 @@
       var path_length = [].slice.call( this.el.querySelectorAll( 'path' ) ).length;
         // console.log(path_length);
         [].slice.call( this.el.querySelectorAll( 'path' ) ).forEach( function( path, i ) {
-         self.path[i] = path;
-         var l = self.path[i].getTotalLength();
-         self.length[i] = l;
-         self.path[i].style.strokeDasharray = l + ' ' + l;
-         self.path[i].style.strokeDashoffset = l;
+          self.path[i] = path;
+          var l = self.path[i].getTotalLength();
+          self.length[i] = l;
+          self.path[i].style.strokeDasharray = l + ' ' + l;
+          self.path[i].style.strokeDashoffset = l;
+          // console.log(l);
+          if(l>550)
+          {
+            self.drawing[i] = true;
+            self.delay[i] = Math.floor((Math.random() * 500) + 1)
+          }
+          else
+          {
+            var rd = Math.floor((Math.random() * 10) + 1);
+            switch (rd){
+            case 1:
+              self.drawing[i] = true;
+              self.delay[i] = Math.floor((Math.random() * 1000) + 1)
+              break;
+            default:
+              break;
+            }
+          }
+
+          if(Math.floor((Math.random() * 2) + 1) === 1)
+            self.direction[i] = true
+          console.log(self.delay[i]);
+
+
+
          if(i === path_length - 1)
          {
             self.done = true;
@@ -83,37 +111,44 @@
     SVGEl.prototype.render = function() {
       if( this.rendered ) return;
       this.rendered = true;
+      this.draw();
+      // var rd = Math.floor((Math.random() * 2) + 1);
+      // console.log(rd);
+      // switch (rd){
+      //   case 1:
+      //   this.draw();
+      //   console.log("here")
+      //   break;
+      //   case 2:
+      //   this.draw_rv();
+      //   break;
+      // }
 
-      var rd = Math.floor((Math.random() * 2) + 1);
-      console.log(rd);
-      switch (rd){
-        case 1:
-        this.draw();
-        console.log("here")
-        break;
-        case 2:
-        this.draw_rv();
-        break;
-    }
+    };
 
-};
-
-SVGEl.prototype.draw = function(revert) {
-  var self = this,
-  progress = this.current_frame/this.total_frames;
-  if (progress > 1) {
-     window.cancelAnimFrame(this.handle);
-     // this.showImage();
-     transitionToImage();
-     console.log("done");
- } else {
-     this.current_frame++;
+    SVGEl.prototype.draw = function(revert) {
+      var self = this,
+      progress = this.current_frame/this.total_frames;
+      if (progress > 1) {
+         window.cancelAnimFrame(this.handle);
+         // this.showImage();
+         transitionToImage();
+         console.log("done");
+     } else {
+         this.current_frame++;
             // console.log(this.current_frame);
 
             // console.log(Math.floor((Math.random() * 2) + 1));
+            // console.log(this.path)
 
             for(var j=0, len = this.path.length; j<len;j++){
-                this.path[j].style.strokeDashoffset = Math.floor(this.length[j] * (1 - progress));
+                if(this.drawing[j])
+                  // setTimeout(function(){
+                    if(this.direction[j])
+                      this.path[j].style.strokeDashoffset = Math.floor(this.length[j] * (1 - progress));
+                    else
+                      this.path[j].style.strokeDashoffset = Math.floor(this.length[j] * -(1 - progress));
+                  // },this.delay[j])
                 // if (j == len - 1)
                 // console.log(j + " - " + len);
                 // alert(Math.floor(this.length[j] * (1 - progress)));
@@ -338,9 +373,9 @@ SVGEl.prototype.draw = function(revert) {
     $(document).ready(function(){
         // go_slider($(".img_sketch li:first-child"));
         // go_slider();
-        // first_screen(function(){
-        //     SVGinit();
-        // });
+        first_screen(function(){
+            SVGinit();
+        });
     })
 
 
