@@ -299,8 +299,9 @@ SVGEl.prototype.draw = function(revert) {
 
     function go_slider(frame){
         // if(frame.html())
+        console.log(typeof(frame));
         if(typeof(frame) === "undefined")
-            frame = $(".img_sketch li:first-child")
+            frame = $(".img_sketch li:first-child");
 
 
         console.log(frame);
@@ -314,9 +315,9 @@ SVGEl.prototype.draw = function(revert) {
             setTimeout(function(){
                 console.log(frame.next());
                 if (frame.next() !== null)
-                    go_slider(frame.next());
+                    return go_slider(frame.next());
                 else
-                    go_slider();
+                    return go_slider();
                 // console.log("while loop")
             },1000);
         // }
@@ -336,7 +337,7 @@ SVGEl.prototype.draw = function(revert) {
     }
     $(document).ready(function(){
         // go_slider($(".img_sketch li:first-child"));
-        go_slider();
+        // go_slider();
         // first_screen(function(){
         //     SVGinit();
         // });
