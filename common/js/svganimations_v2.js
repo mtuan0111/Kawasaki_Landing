@@ -56,7 +56,7 @@
       this.done = false;
       this.drawing = new Array();
       this.direction = new Array();
-      this.delay = new Array();
+      // this.delay = new Array();
       this.init();
   }
 
@@ -75,7 +75,7 @@
           if(l>550)
           {
             self.drawing[i] = true;
-            self.delay[i] = Math.floor((Math.random() * 500) + 1)
+            // self.delay[i] = Math.floor((Math.random() * 500) + 1)
           }
           else
           {
@@ -83,7 +83,7 @@
             switch (rd){
             case 1:
               self.drawing[i] = true;
-              self.delay[i] = Math.floor((Math.random() * 1000) + 1)
+              // self.delay[i] = Math.floor((Math.random() * 1000) + 1)
               break;
             default:
               break;
@@ -92,7 +92,7 @@
 
           if(Math.floor((Math.random() * 2) + 1) === 1)
             self.direction[i] = true
-          console.log(self.delay[i]);
+          // console.log(self.delay[i]);
 
 
 
@@ -132,8 +132,10 @@
       if (progress > 1) {
          window.cancelAnimFrame(this.handle);
          // this.showImage();
-         transitionToImage();
-         console.log("done");
+         transitionToImage(function(){
+            go_slider();
+         });
+         // console.log("done");
      } else {
          this.current_frame++;
             // console.log(this.current_frame);
@@ -166,7 +168,7 @@
             window.cancelAnimFrame(this.handle);
             // this.showImage();
             transitionToImage();
-            console.log("done");
+            // console.log("done");
         } else {
             this.current_frame++;
             // console.log(this.current_frame);
@@ -296,10 +298,10 @@
     }
 
     function transitionToImage(callback){
-        $(".top_animate .img_sketch").fadeIn(5000),function(){
+        $(".top_animate .img_sketch").fadeIn(2000),function(){
 
         };
-        $(".top_animate .line-drawing").fadeOut(5000,function(){
+        $(".top_animate .line-drawing").fadeOut(2000,function(){
 
             $(".top_animate .illustration").removeClass("zoom_in");
             $(".top_logo_animate").removeClass("begin_position");
@@ -316,14 +318,14 @@
                         $(".top_animate .frame_bottom .h2_title").fadeIn(1000,function(){
                             $(".top_animate .frame_bottom .img_po").fadeIn(1000).removeClass("hide");
                         }).removeClass("hide");
-
+                        if (callback && typeof(callback) === "function") {
+                            callback();
+                        }
                     })
                 },2000)
             },5000)
 
-            if (callback && typeof(callback) === "function") {
-                callback();
-            }
+
         });
     }
 
@@ -332,37 +334,33 @@
     // )
 
 
-    function go_slider(frame){
-        // if(frame.html())
-        console.log(typeof(frame));
-        if(typeof(frame) === "undefined")
-            frame = $(".img_sketch li:first-child");
+    function go_slider(frame_number){
+        if (!(frame_number && typeof(frame_number) !== "undefined")){
+            var frame_number = 1;
+        }
 
+        var e = $(".img_sketch li:nth-child("+frame_number+")");
+        if (e.html() === null){
+            frame_number = 1;
+        }
+        // console.log(frame_number);
+        $(".img_sketch li").removeClass("show_img");
+        e = $(".img_sketch li:nth-child("+frame_number+")");
+        e.addClass("show_img")
+        // frame_number++;
+        setTimeout(function(){
+            return go_slider(++frame_number);
+            // console.log("while loop")
+        },4000);
 
-        console.log(frame);
-        // console.log(frame.next());
-        // if( !$frame && console.)
-        // var current_element = $(".img_sketch li.show_img")[0];
-        // // typeof
-        // var current_element = $(".img_sketch li:first-child");
-
-
-            setTimeout(function(){
-                console.log(frame.next());
-                if (frame.next() !== null)
-                    return go_slider(frame.next());
-                else
-                    return go_slider();
-                // console.log("while loop")
-            },1000);
-        // }
+        // // }
     }
 
     function first_screen(callback){
         setTimeout(function(){
-            console.log(typeof(callback));
-            console.log("first_screen");
-            $(".First_text").fadeOut(2000,function(){
+            // console.log(typeof(callback));
+            // console.log("first_screen");
+            $(".First_text").fadeOut(1000,function(){
                 // console.log(123 + " " + callback);
                 if (callback && typeof(callback) === "function") {
                     callback();
