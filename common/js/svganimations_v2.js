@@ -49,7 +49,7 @@
       this.el = el;
       this.image = this.el.previousElementSibling;
       this.current_frame = 0;
-      this.total_frames = 180;
+      this.total_frames = 36;
       this.path = new Array();
       this.length = new Array();
       this.handle = 0;
@@ -63,35 +63,46 @@
   SVGEl.prototype.init = function(callback) {
       classie.remove( this.el, 'hide' );
       var self = this;
+      var j = 0;
       var path_length = [].slice.call( this.el.querySelectorAll( 'path' ) ).length;
         // console.log(path_length);
         [].slice.call( this.el.querySelectorAll( 'path' ) ).forEach( function( path, i ) {
-          self.path[i] = path;
-          var l = self.path[i].getTotalLength();
-          self.length[i] = l;
-          self.path[i].style.strokeDasharray = l + ' ' + l;
-          self.path[i].style.strokeDashoffset = l;
-          // console.log(l);
-          if(l>550)
+
+          if(path.getTotalLength()>550 || Math.floor((Math.random() * 10) + 1) < 2 || classie.has(path, "logo_part"))
           {
-            self.drawing[i] = true;
+            self.path[j] = path;
+            var l = self.path[j].getTotalLength();
+            self.length[j] = l;
+            self.path[j].style.strokeDasharray = l + ' ' + l;
+            self.path[j].style.strokeDashoffset = l;
+            // console.log(l);
+
+            //self.drawing[j] = true;
+            if(Math.floor((Math.random() * 2) + 1) === 1)
+            self.direction[j] = true
             // self.delay[i] = Math.floor((Math.random() * 500) + 1)
+            j++;
           }
           else
           {
-            var rd = Math.floor((Math.random() * 10) + 1);
-            switch (rd){
-            case 1:
-              self.drawing[i] = true;
-              // self.delay[i] = Math.floor((Math.random() * 1000) + 1)
-              break;
-            default:
-              break;
-            }
+            path.remove();
+            // path.style.strokeDasharray = l + ' ' + l;
+            // path.style.strokeDashoffset = l;
           }
+          // else
+          // {
+          //   var rd = Math.floor((Math.random() * 10) + 1);
+          //   switch (rd){
+          //   case 1:
+          //     self.drawing[i] = true;
+          //     // self.delay[i] = Math.floor((Math.random() * 1000) + 1)
+          //     break;
+          //   default:
+          //     break;
+          //   }
+          // }
 
-          if(Math.floor((Math.random() * 2) + 1) === 1)
-            self.direction[i] = true
+
           // console.log(self.delay[i]);
 
 
@@ -132,9 +143,11 @@
       if (progress > 1) {
          window.cancelAnimFrame(this.handle);
          // this.showImage();
-         transitionToImage(function(){
-            go_slider();
-         });
+         setTimeout(function(){
+             transitionToImage(function(){
+                go_slider();
+             });
+         },500)
          // console.log("done");
      } else {
          this.current_frame++;
@@ -144,7 +157,7 @@
             // console.log(this.path)
 
             for(var j=0, len = this.path.length; j<len;j++){
-                if(this.drawing[j])
+                // if(this.drawing[j])
                   // setTimeout(function(){
                     if(this.direction[j])
                       this.path[j].style.strokeDashoffset = Math.floor(this.length[j] * (1 - progress));
@@ -161,32 +174,6 @@
         }
     };
 
-    SVGEl.prototype.draw_rv = function(revert) {
-        var self = this,
-        progress = this.current_frame/this.total_frames;
-        if (progress > 1) {
-            window.cancelAnimFrame(this.handle);
-            // this.showImage();
-            transitionToImage();
-            // console.log("done");
-        } else {
-            this.current_frame++;
-            // console.log(this.current_frame);
-
-            // console.log(Math.floor((Math.random() * 2) + 1));
-
-            for(var j=0, len = this.path.length; j<len;j++){
-                this.path[j].style.strokeDashoffset = Math.floor(this.length[j] * -(1 - progress));
-                // if (j == len - 1)
-                // console.log(j + " - " + len);
-                // alert(Math.floor(this.length[j] * (1 - progress)));
-            }
-
-            // console.log(this);
-            this.handle = window.requestAnimFrame(function() { self.draw_rv(revert); });
-        }
-    };
-
     SVGEl.prototype.showImage = function() {
       classie.add( this.image, 'show' );
       classie.add( this.el, 'hide' );
@@ -197,9 +184,9 @@
       inner = window['innerHeight'];
 
       if( client < inner )
-         return inner;
-     else
-         return client;
+        return inner;
+      else
+        return client;
  }
 
  function scrollY() {
@@ -257,9 +244,9 @@
             // console.log(svg);
             setTimeout(function( el ) {
                 return function() {
-                   if( inViewport( el.parentNode ) ) {
+                   // if( inViewport( el.parentNode ) ) {
                       svg.render();
-                  }
+                  // }
               };
           }( el ), 250 );
         } );
@@ -298,18 +285,16 @@
     }
 
     function transitionToImage(callback){
-        $(".top_animate .img_sketch").fadeIn(2000),function(){
-
-        };
+        $(".top_animate .img_sketch.hide").removeClass("hide");
         $(".top_animate .line-drawing").fadeOut(2000,function(){
 
             $(".top_animate .illustration").removeClass("zoom_in");
             $(".top_logo_animate").removeClass("begin_position");
 
-            setTimeout(function(){
-                $(".top_logo_animate").removeClass("first_position",function(){
-                });
-                setTimeout(function(){
+            // setTimeout(function(){
+                // $(".top_logo_animate").removeClass("first_position",function(){
+                // });
+                // setTimeout(function(){
                     // show FirstTest
                     $(".frame_text").fadeIn(300);
 
@@ -322,8 +307,8 @@
                             callback();
                         }
                     })
-                },2000)
-            },5000)
+                // },2000)
+            // },3000)
 
 
         });
@@ -340,16 +325,18 @@
         }
 
         var e = $(".img_sketch li:nth-child("+frame_number+")");
-        if (e.html() === null){
-            frame_number = 1;
+        // console.log(e.html());
+        if (typeof(e.html()) === "undefined"){
+            // frame_number = 1;
+            return go_slider();
         }
         // console.log(frame_number);
         $(".img_sketch li").removeClass("show_img");
         e = $(".img_sketch li:nth-child("+frame_number+")");
         e.addClass("show_img")
-        // frame_number++;
+        frame_number++;
         setTimeout(function(){
-            return go_slider(++frame_number);
+            return go_slider(frame_number);
             // console.log("while loop")
         },4000);
 
